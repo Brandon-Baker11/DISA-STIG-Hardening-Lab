@@ -64,6 +64,7 @@ Going back to the Cyber Exchange web page, select the **Document Library** tab l
 In the search bar on this page, type **Windows** and a list of STIGs associated with Windows operating systems should populate. Select the one titled **Microsoft Windows 11 STIG - Ver 2, Rel 7**
 > If that specific version isn't there it may have been replaced with a newer version.
 <img width="1443" height="1039" alt="Screenshot from 2026-05-16 13-46-32" src="https://github.com/user-attachments/assets/f82343a1-9c5d-4b8d-92dd-e0809db1dc39" />
+
 Once the .zip file is downloaded, extract it.
 Feel free to browse through each individual STIG rule to gain a bit more knowledge of the hardening techniques used.
 
@@ -181,6 +182,7 @@ On the client device in a command prompt window, type the command `gpupdate /for
 
 Now navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Account Lockout Policy. Note that the policies have updated to match the changes made on the DC.
 <img width="1051" height="881" alt="Screenshot from 2026-05-16 16-32-23" src="https://github.com/user-attachments/assets/6de6c06e-3dd4-4fff-b4bd-f1e5d6f4b08d" />
+
 In the **Comments** section of the STIG rule I document my findings. In the **Finding Details** section I explain the action taken to remediate the finding. Click the gray box in the left-hand side of the STIG Rule once to mark it as not a finding since we remediated the finding
 
 
@@ -201,6 +203,7 @@ To remediate this finding, we will be making another GPO. Follow the steps befor
 I'm going to switch back to my client and run another gpupdate. Once it is complete I will check the service to see if the change was applied.
 > As you can see, the service's startup type has been changed to match the policy setting.
 <img width="1051" height="881" alt="Screenshot from 2026-05-16 17-11-41" src="https://github.com/user-attachments/assets/6b58616a-90b8-4afc-9a36-07d0c11472f9" />
+
 In the **Comments** section of the STIG rule I document my findings. In the **Finding Details** section I explain the action taken to remediate the finding. Click the gray box in the left-hand side of the STIG Rule once to mark it as not a finding since we remediated the finding
 
 
