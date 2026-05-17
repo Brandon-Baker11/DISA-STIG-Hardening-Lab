@@ -97,10 +97,9 @@ Under the section labeled **Library STIGs**, you should see the Microsoft Window
 Search through the list and click the **+** icon next to each rule to add it to the checklist. I will be adding the following rules to my checklist:
 - [V-268317](#copilot)
 - [V-253298](#logon)
-- [V-253261](#bitlocker)
-- [V-253269](#only-admin)
 - [V-253272](#standard-user)
 - [V-523289](#secondary)
+- [V-253340/V-253341/V-253342](#event-viewer)
 <img width="1042" height="792" alt="Screenshot from 2026-05-16 14-48-37" src="https://github.com/user-attachments/assets/9efa1149-7229-445b-aa31-0a8c600bc9a4" />
 
 
@@ -186,9 +185,27 @@ Now navigate to Local Computer Policy >> Computer Configuration >> Windows Setti
 In the **Comments** section of the STIG rule I document my findings. In the **Finding Details** section I explain the action taken to remediate the finding. Click the gray box in the left-hand side of the STIG Rule once to mark it as not a finding since we remediated the finding
 
 
+<a name="standard-user"></a>
+### V-253272
+STIG rule V-253272 states that standard local user accounts must not exist on a system in a domain. The reason for this is to minimize the surface area of attack. Having uneccessary user accounts on a device other than the built-in ones oppose that goal. To verify the local user accounts available on my client device I'm going to search **Computer Management** 
+<img width="1052" height="882" alt="Screenshot from 2026-05-17 11-45-44" src="https://github.com/user-attachments/assets/efd42d18-a03c-45d6-85b6-c7db7e4b3a83" />
+
+
+Navigate to System Tools >> Local Users and Groups >> Users. As the STIG rule notes in the **Check Text** section, only the Built-in Administrator account (Disabled), Built-in Guest account (Disabled), Built-in DefaultAccount (Disabled), Built-in defaultuser0 (Disabled), Built-in WDAGUtilityAccount (Disabled), and Local administrator account(s) should be present. Any other account seen here that isn't listed is an unauthorized account.
+> Some of the accounts listed may not appear on every build of Winodws 11. This is dependant on the version being run.
+<img width="1052" height="882" alt="Screenshot from 2026-05-17 11-47-23" src="https://github.com/user-attachments/assets/e775b1e9-05cf-4fbb-8bf2-86a9dd777465" />
+
+
+Since there is an account named **user** that is a finding. We will simply be deleting it to bring our client to compliance with the STIG. Simply right-click and select delete to remove the account.
+>You might notice that there is a new localadmin account listed. I did this because the account deleted was an admin account that I initially used when spinning up the VM. Ensure that there is a local administrator account accessible before deleting other accounts.
+<img width="1052" height="882" alt="Screenshot from 2026-05-17 12-04-54" src="https://github.com/user-attachments/assets/f0ce307c-0e4a-4d00-9fb1-c6cd8d2bdee0" />
+
+In the **Comments** section of the STIG rule I document my findings. In the **Finding Details** section I explain the action taken to remediate the finding. Click the gray box in the left-hand side of the STIG Rule once to mark it as not a finding since we remediated the finding
+
+
 <a name="secondary"></a>
 ### V-523289
-Thist STIG rule states the Secondary Logon service must be disabled on Windows 11. It explains that the Secondary Logon service provides a means for entering alternate credentials, typically used to run commands with elevated privileges. Using privileged credentials in a standard user session can expose those credentials to theft. On the client device I will run **services.msc** to access the services utility.
+This STIG rule states the Secondary Logon service must be disabled on Windows 11. It explains that the Secondary Logon service provides a means for entering alternate credentials, typically used to run commands with elevated privileges. Using privileged credentials in a standard user session can expose those credentials to theft. On the client device I will run **services.msc** to access the services utility.
 <img width="1051" height="881" alt="Screenshot from 2026-05-16 16-54-38" src="https://github.com/user-attachments/assets/2694bfdb-38b7-4ea4-b1f7-3f1f1d169eeb" />
 
 
@@ -207,21 +224,27 @@ I'm going to switch back to my client and run another gpupdate. Once it is compl
 In the **Comments** section of the STIG rule I document my findings. In the **Finding Details** section I explain the action taken to remediate the finding. Click the gray box in the left-hand side of the STIG Rule once to mark it as not a finding since we remediated the finding
 
 
+<a name="event-viewer"></a>
+### V-253340/V-253341/V-253342
+In the final assessment I'll be viewing STIGs V-253340, V-253341, and V-253342 since they are closely related to each other. The STIGs state Windows 11 permissions for the System, Security, and Application event logs must prevent access by non-privileged accounts. As noted in the STIG it is paramount that an audit trail of system activity logs be maintained. They can help identify configuration errors, troubleshoot service disruptions, and analyze compromises that have occurred, as well as detect attacks. The system event log can become compromised if appropriate permissions aren't assigned.
 
 
+Back on my client workstation, I enter **Win+R** to bring up the **Run** tool. Enter **%SystemRoot%\SYSTEM32\WINEVT\LOGS** to access the location where the System.evtx, Security.evtx, and Application.evtx files are stored.
+<img width="1052" height="882" alt="Screenshot from 2026-05-17 12-34-46" src="https://github.com/user-attachments/assets/abd2e0ca-b0fe-4d9f-88f9-d0fcfbd41d53" />
 
 
+The ACLs should allow **Full-Control** to Eventlog, SYSTEM, and Administrators. I will go in and check the permissions for each.
+<img width="1052" height="882" alt="Screenshot from 2026-05-17 12-44-29" src="https://github.com/user-attachments/assets/4aec7651-fa42-4c02-ae22-3d9dd0ceec24" />
+<img width="1052" height="882" alt="Screenshot from 2026-05-17 12-46-31" src="https://github.com/user-attachments/assets/6070c9fa-5beb-4bb8-a751-0836e4ea175c" />
+<img width="1052" height="882" alt="Screenshot from 2026-05-17 12-47-55" src="https://github.com/user-attachments/assets/be637146-dccb-43dd-a331-1e7f9157bb5b" />
 
 
+As you can see, the ACLs for each of the event viewers are within compliance and are therefore not findings in my AD environment. I will make my annotations according to the findings. I will also change the status of the three STIG rules to **Not Applicable** to account for them
+<img width="1078" height="834" alt="Screenshot from 2026-05-17 12-52-30" src="https://github.com/user-attachments/assets/9ad64bd0-51d3-4632-a84f-fae333df4125" />
 
 
-
-
-
-
-
-
-
+## Conclusion
+In this lab I was able to demonstrate how to implement DISA's recommended STIGs. I assessed my client's vulnerabilites, identified flaws in configuration, made remediations to those vulnerabilites, and validated the changes made.
 
 
 
